@@ -3,6 +3,7 @@ package gcm
 import (
 	"crypto/tls"
 	"encoding/json"
+	"fmt"
 	"net"
 	"time"
 
@@ -54,8 +55,13 @@ func (c *Conn) Responses() <-chan Response {
 				c.err = err
 				return
 			}
+			m := s.Value.(*message)
+			if m.Error.Code != "" || m.Error.Text.Body != "" {
+				c.err = m.Error
+				return
+			}
 			resp := Response{}
-			if err = json.Unmarshal(s.Value.(*message).GCM.Value, &resp); err != nil {
+			if err = json.Unmarshal(m.GCM.Value, &resp); err != nil {
 				c.err = err
 				return
 			}
@@ -97,8 +103,22 @@ type Response struct {
 }
 
 type message struct {
-	ID  string     `xml:"id,attr"`
-	GCM gcmWrapper `xml:"gcm"`
+	ID    string     `xml:"id,attr"`
+	GCM   gcmWrapper `xml:"gcm"`
+	Error gcmError   `xml:"error"`
+}
+
+type gcmError struct {
+	Code string       `xml:"code,attr"`
+	Text gcmErrorText `xml:"text"`
+}
+
+func (err gcmError) Error() string {
+	return fmt.Sprintf("%s: %s", err.Code, err.Text.Body)
+}
+
+type gcmErrorText struct {
+	Body string `xml:",innerxml"`
 }
 
 type gcmWrapper struct {

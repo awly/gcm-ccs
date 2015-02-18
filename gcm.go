@@ -105,12 +105,12 @@ type Response struct {
 type message struct {
 	ID    string     `xml:"id,attr"`
 	GCM   gcmWrapper `xml:"gcm"`
-	Error gcmError   `xml:"error"`
+	Error gcmError   `xml:"error,omitempty"`
 }
 
 type gcmError struct {
 	Code string       `xml:"code,attr"`
-	Text gcmErrorText `xml:"text"`
+	Text gcmErrorText `xml:"text,omitempty"`
 }
 
 func (err gcmError) Error() string {

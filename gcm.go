@@ -4,6 +4,7 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"net"
+	"time"
 
 	"github.com/agl/xmpp"
 )
@@ -62,6 +63,10 @@ func (c *Conn) Responses() <-chan Response {
 		}
 	}()
 	return rch
+}
+
+func (c *Conn) SetWriteTimeout(d time.Duration) error {
+	return c.rawc.SetWriteDeadline(time.Now().Add(d))
 }
 
 func (c *Conn) Close() error {

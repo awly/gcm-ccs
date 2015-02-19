@@ -103,9 +103,9 @@ type Response struct {
 }
 
 type message struct {
-	ID    string     `xml:"id,attr"`
-	GCM   gcmWrapper `xml:"gcm"`
-	Error gcmError   `xml:"error,omitempty"`
+	ID    string `xml:"id,attr"`
+	GCM   gcmWrapper
+	Error gcmError `xml:"error,omitempty"`
 }
 
 type gcmError struct {
@@ -122,14 +122,13 @@ type gcmErrorText struct {
 }
 
 type gcmWrapper struct {
-	XMLNS string `xml:"xmlns,attr"`
-	Value []byte `xml:",innerxml"`
+	XMLName struct{} `xml:"google:mobile:data gcm"`
+	Value   []byte   `xml:",innerxml"`
 }
 
 func wrapMsg(m []byte) interface{} {
 	return message{
 		GCM: gcmWrapper{
-			XMLNS: "google:mobile:data",
 			Value: m,
 		},
 	}

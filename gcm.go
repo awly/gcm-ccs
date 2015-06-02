@@ -7,7 +7,7 @@ import (
 	"net"
 	"time"
 
-	"github.com/agl/xmpp"
+	"github.com/agl/xmpp-client/xmpp"
 )
 
 const (

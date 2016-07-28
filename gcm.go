@@ -29,7 +29,7 @@ func Dial(addr, senderID, apiKey string) (*Conn, error) {
 
 	conf := &xmpp.Config{Conn: con, SkipTLS: true}
 
-	xcon, err := xmpp.Dial(addr, senderID, "gcm.googleapis.com", apiKey, conf)
+	xcon, err := xmpp.Dial(addr, senderID, "gcm.googleapis.com", "", apiKey, conf)
 	if err != nil {
 		return nil, err
 	}
